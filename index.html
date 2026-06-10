@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZ-900 Practice Exam</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --azure: #0078d4;
+    --azure-light: #e8f3fb;
+    --azure-mid: #c7e0f4;
+    --azure-dark: #005a9e;
+    --correct: #107c10;
+    --correct-bg: #dff6dd;
+    --wrong: #a4262c;
+    --wrong-bg: #fde7e9;
+    --neutral-bg: #f5f5f5;
+    --border: #e0e0e0;
+    --text: #1a1a1a;
+    --text-muted: #616161;
+    --white: #ffffff;
+    --tab-inactive: #f0f0f0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f8f9fb;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .azure-logo {
+    width: 28px; height: 28px;
+    background: var(--azure);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .azure-logo svg { width: 16px; height: 16px; fill: white; }
+  header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+  header span {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* TABS */
+  .tabs-wrapper {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 14px 20px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab-btn:hover { color: var(--azure); }
+  .tab-btn.active {
+    color: var(--azure);
+    border-bottom-color: var(--azure);
+    font-weight: 600;
+  }
+  .tab-badge {
+    font-size: 11px;
+    background: var(--azure-light);
+    color: var(--azure-dark);
+    border-radius: 20px;
+    padding: 1px 7px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tab-btn.active .tab-badge {
+    background: var(--azure);
+    color: white;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 28px;
+  }
+  .section-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+  }
+  .section-header p {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* SCORE PANEL */
+  .score-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .score-ring {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: conic-gradient(var(--azure) var(--pct, 0%), var(--azure-light) 0%);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .score-ring::after {
+    content: '';
+    position: absolute;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--white);
+  }
+  .score-ring span {
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--azure-dark);
+  }
+  .score-info { flex: 1; }
+  .score-info .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+  .score-info .value { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .score-info .value span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+  .reset-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--azure);
+    background: var(--azure-light);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .reset-btn:hover { background: var(--azure-mid); }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .question-card:hover { border-color: #c0d0e0; }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .q-num {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--azure-dark);
+    background: var(--azure-light);
+    border-radius: 5px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-text {
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--text);
+    flex: 1;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--azure);
+    background: var(--azure-light);
+  }
+  .option-btn:disabled { cursor: default; }
+  .opt-letter {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    background: var(--neutral-bg);
+    border-radius: 4px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    min-width: 22px;
+    text-align: center;
+  }
+  .opt-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  /* STATES */
+  .option-btn.correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+  }
+  .option-btn.correct .opt-letter {
+    background: var(--correct);
+    color: white;
+  }
+  .option-btn.wrong {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+  }
+  .option-btn.wrong .opt-letter {
+    background: var(--wrong);
+    color: white;
+  }
+  .option-btn.reveal {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+    opacity: 0.7;
+  }
+  .option-btn.reveal .opt-letter {
+    background: var(--correct);
+    color: white;
+  }
+
+  /* EXPLANATION */
+  .explanation {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--azure);
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    display: none;
+  }
+  .explanation.visible { display: block; }
+  .explanation strong { color: var(--text); }
+
+  /* STATUS ICON */
+  .q-status {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    margin-left: auto;
+  }
+  .q-status.correct { background: var(--correct-bg); color: var(--correct); }
+  .q-status.wrong   { background: var(--wrong-bg);   color: var(--wrong);   }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--azure);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  @media (max-width: 600px) {
+    main { padding: 20px 16px 60px; }
+    header { padding: 0 16px; }
+    .tabs-wrapper { padding: 0 16px; }
+    .tab-btn { padding: 12px 14px; font-size: 12.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="azure-logo">
+    <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 1L1 15h16L9 1zm0 3.2L14.4 14H3.6L9 4.2z"/>
+    </svg>
+  </div>
+  <h1>AZ-900 Practice Exam</h1>
+  <span>3 modules · 45 questions</span>
+</header>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab('arch')">
+    Azure Architecture &amp; Services <span class="tab-badge">15 Q</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('pricing')">
+    Azure Pricing &amp; Lifecycle <span class="tab-badge">15 Q</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('security')">
+    Azure Security <span class="tab-badge">15 Q</span>
+  </button>
+</div>
+
+<main>
+
+  <!-- TAB 1: ARCHITECTURE -->
+  <div id="tab-arch" class="tab-panel active">
+    <div class="section-header">
+      <h2>Azure Architecture &amp; Services</h2>
+      <p>Storage redundancy · Identity &amp; access · Zero Trust · Defense in Depth</p>
+    </div>
+    <div class="score-panel" id="score-arch">
+      <div class="score-ring" id="ring-arch" style="--pct:0%"><span id="pct-arch">0%</span></div>
+      <div class="score-info">
+        <div class="label">Score</div>
+        <div class="value"><span id="num-arch">0</span> <span>/ 15 answered</span></div>
+      </div>
+      <button class="reset-btn" onclick="resetTab('arch')">Reset</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-arch" style="width:0%"></div></div>
+    <div id="questions-arch"></div>
+  </div>
+
+  <!-- TAB 2: PRICING -->
+  <div id="tab-pricing" class="tab-panel">
+    <div class="section-header">
+      <h2>Azure Pricing &amp; Lifecycle</h2>
+      <p>Cost factors · SLAs · Pricing Calculator · TCO · Preview programs</p>
+    </div>
+    <div class="score-panel" id="score-pricing">
+      <div class="score-ring" id="ring-pricing" style="--pct:0%"><span id="pct-pricing">0%</span></div>
+      <div class="score-info">
+        <div class="label">Score</div>
+        <div class="value"><span id="num-pricing">0</span> <span>/ 15 answered</span></div>
+      </div>
+      <button class="reset-btn" onclick="resetTab('pricing')">Reset</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-pricing" style="width:0%"></div></div>
+    <div id="questions-pricing"></div>
+  </div>
+
+  <!-- TAB 3: SECURITY -->
+  <div id="tab-security" class="tab-panel">
+    <div class="section-header">
+      <h2>Azure Security</h2>
+      <p>Security Center · Sentinel · Key Vault · NSG · DDoS · Firewall</p>
+    </div>
+    <div class="score-panel" id="score-security">
+      <div class="score-ring" id="ring-security" style="--pct:0%"><span id="pct-security">0%</span></div>
+      <div class="score-info">
+        <div class="label">Score</div>
+        <div class="value"><span id="num-security">0</span> <span>/ 15 answered</span></div>
+      </div>
+      <button class="reset-btn" onclick="resetTab('security')">Reset</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-security" style="width:0%"></div></div>
+    <div id="questions-security"></div>
+  </div>
+
+</main>
+
+<script>
+const DATA = {
+  arch: [
+    { q: "Which Azure storage redundancy option stores copies across three availability zones in the primary region?", opts: ["LRS — Locally Redundant Storage","GRS — Geo-Redundant Storage","ZRS — Zone-Redundant Storage","GZRS — Geo-Zone-Redundant Storage"], ans: 2, exp: "ZRS stores copies across three availability zones in the primary region and provides 12 nines of durability." },
+    { q: "What is the minimum storage duration for the Archive access tier?", opts: ["7 days","30 days","90 days","180 days"], ans: 3, exp: "The Archive tier is for rarely accessed data stored for at least 180 days. It has the lowest cost but the slowest access time." },
+    { q: "A company wants to migrate 60 TB of data to Azure but has very limited internet connectivity. Which service should they use?", opts: ["Azure Migrate","AzCopy","Azure Data Box","Azure File Sync"], ans: 2, exp: "Azure Data Box is a physical device that stores up to 80 TB and is ideal for locations with limited or no internet connectivity." },
+    { q: "Which Azure storage service is optimized for storing large amounts of unstructured data such as images and videos?", opts: ["Azure Tables","Azure Queue","Azure Files","Azure Blob"], ans: 3, exp: "Azure Blob storage is optimized for storing massive amounts of unstructured data such as text or binary data." },
+    { q: "What is the correct public endpoint format for Azure Queue Storage?", opts: ["https://<account>.blob.core.windows.net","https://<account>.queue.core.windows.net","https://<account>.file.core.windows.net","https://<account>.table.core.windows.net"], ans: 1, exp: "Each Azure storage service has its own endpoint. Queue Storage uses the .queue subdomain." },
+    { q: "Which file management tool supports bidirectional synchronization between Azure and on-premises servers?", opts: ["AzCopy","Azure Storage Explorer","Azure File Sync","Azure Data Box"], ans: 2, exp: "Azure File Sync is the only tool that supports bidirectional sync. AzCopy is one-direction only." },
+    { q: "What is Microsoft Entra ID?", opts: ["A physical security service for Azure datacenters","A cloud-based identity and access management service","A storage redundancy configuration","A network firewall solution"], ans: 1, exp: "Microsoft Entra ID (formerly Azure Active Directory) is Microsoft's cloud-based identity and access management service supporting SSO, MFA, B2B, and more." },
+    { q: "A company has legacy applications that cannot use modern authentication standards. Which service allows them to run these apps in the cloud?", opts: ["Microsoft Entra ID","Conditional Access","Microsoft Entra Domain Services","Azure Defender for Cloud"], ans: 2, exp: "Entra Domain Services provides cloud-based domain services without managing domain controllers, and supports legacy apps that cannot use modern auth standards." },
+    { q: "Which of the following correctly describes the difference between Authentication and Authorization?", opts: ["Authentication defines what you can do; Authorization verifies who you are","Authentication verifies who you are; Authorization defines what you can do","They are the same concept","Authorization always happens before Authentication"], ans: 1, exp: "Authentication = WHO are you? (verifying identity). Authorization = WHAT can you do? (defining access level). Authentication always comes first." },
+    { q: "MFA requires two or more elements. Which option is NOT one of the three MFA factors?", opts: ["Something you know (password)","Something you possess (phone)","Something you share (email)","Something you are (fingerprint)"], ans: 2, exp: "The three MFA factors are: something you know, something you possess, and something you are. 'Something you share' is not a valid MFA factor." },
+    { q: "A developer from a partner company needs access to your Azure resources using their own company account. Which feature should you use?", opts: ["B2C — Business to Consumer","B2B — Business to Business","Conditional Access","RBAC"], ans: 1, exp: "B2B allows external partners, vendors, and suppliers to access your resources using their own organization accounts via invitation or self-service sign-up." },
+    { q: "Conditional Access evaluates multiple signals before granting access. Which of the following is NOT one of those signals?", opts: ["IP Location","Device compliance","Storage tier","Risk detection"], ans: 2, exp: "Conditional Access signals include user/group membership, IP location, device, application, and risk detection. Storage tier is not a signal." },
+    { q: "What is the core principle of Role-Based Access Control (RBAC)?", opts: ["Grant all users full access by default","Grant the minimum permissions needed to do the job","Allow access only from trusted networks","Require MFA for every login"], ans: 1, exp: "RBAC is based on the Principle of Least Privilege — each user gets only the permissions they need to perform their job, nothing more." },
+    { q: "What is the key difference between the Zero Trust model and the Classic security approach?", opts: ["Zero Trust only applies to cloud environments","Classic approach requires MFA; Zero Trust does not","Classic approach trusts users inside the network; Zero Trust requires verification regardless of location","Zero Trust removes the need for firewalls"], ans: 2, exp: "The classic approach assumes users inside the network are trusted. Zero Trust follows 'Never Trust, Always Verify' — every access attempt must be verified regardless of location." },
+    { q: "Which layer is at the CENTER (innermost layer) of the Defense in Depth model?", opts: ["Network","Physical Security","Application","Data"], ans: 3, exp: "The Defense in Depth model has 7 layers. Data is the innermost layer — the ultimate asset being protected. The outermost layer is Physical Security." }
+  ],
+  pricing: [
+    { q: "Which of the following is NOT one of the six primary factors affecting Azure costs?", opts: ["Resource Type","Bandwidth","Developer Experience","Location"], ans: 2, exp: "The six primary cost factors are: Resource Type, Consumption, Bandwidth, Location, Reserved Capacity, and Azure Hybrid Benefit. Developer Experience is not one of them." },
+    { q: "A company wants to reduce Azure costs by committing to a three-year plan for their virtual machines. Which option should they use?", opts: ["Azure Hybrid Use Benefit","Azure Reserved Instances","Azure Free Tier","Azure Spot Instances"], ans: 1, exp: "Azure Reserved Instances allow you to commit to 1-year or 3-year plans and save up to 72% compared to pay-as-you-go pricing." },
+    { q: "Which type of data transfer in Azure is free of charge?", opts: ["Outbound data leaving Azure datacenters","Inbound data entering Azure datacenters","Data transferred between regions","Data transferred between availability zones"], ans: 1, exp: "Inbound (ingress) data to Azure datacenters is free. Outbound (egress) data is charged based on billing zones." },
+    { q: "A customer has existing Windows Server licenses with Software Assurance. Which Azure feature allows them to use these licenses on Azure at a reduced cost?", opts: ["Azure Reserved Instances","Azure Free Trial","Azure Hybrid Use Benefit (HUB)","Azure Spending Limit"], ans: 2, exp: "Azure Hybrid Use Benefit lets customers with Software Assurance bring their existing Windows Server and SQL Server licenses to Azure, saving up to 40%." },
+    { q: "What is the primary purpose of the Azure Pricing Calculator?", opts: ["Compare on-premises costs with Azure costs","Estimate the cost of Azure products before deployment","Monitor spending after resources are deployed","Calculate SLA compensation credits"], ans: 1, exp: "The Azure Pricing Calculator helps you estimate costs before deployment by configuring Azure services and seeing their projected monthly costs." },
+    { q: "Which tool would you use to show management how much money the company could save by migrating from on-premises infrastructure to Azure?", opts: ["Azure Pricing Calculator","Azure Cost Management","TCO Calculator","Azure Advisor"], ans: 2, exp: "The Total Cost of Ownership (TCO) Calculator compares the cost of running workloads on-premises vs. in Azure to demonstrate potential savings." },
+    { q: "Which Azure Cost Management feature sends a notification when spending exceeds a defined threshold?", opts: ["Budgets","Reporting","Alerting","Data Enrichment"], ans: 2, exp: "Cost Alerts in Azure Cost Management automatically notify you when spending reaches or exceeds defined thresholds, helping prevent budget overruns." },
+    { q: "What does an SLA in Azure define?", opts: ["The maximum number of resources per subscription","Microsoft's commitments for uptime and connectivity","The pricing structure for reserved instances","The support response time for critical issues"], ans: 1, exp: "An SLA (Service Level Agreement) defines Microsoft's formal commitments for uptime, connectivity, and the credits customers receive if those commitments aren't met." },
+    { q: "A web application uses two Azure services: Service A with 99.95% SLA and Service B with 99.99% SLA. What is the approximate composite SLA?", opts: ["99.99%","99.95%","99.94%","100%"], ans: 2, exp: "Composite SLA = 99.95% × 99.99% ≈ 99.94%. Chaining services multiplies their availability, which lowers the overall SLA." },
+    { q: "Which action will RAISE your overall SLA?", opts: ["Adding more Azure services to your architecture","Using free-tier Azure services","Deploying resources across Availability Zones","Using Preview features in production"], ans: 2, exp: "Deploying resources across Availability Zones adds redundancy and raises the effective SLA. More services lower the composite SLA; Preview services have no SLA." },
+    { q: "A service has a 99.9% SLA. Approximately how much downtime per month does this allow?", opts: ["7 hours 18 minutes","43 minutes 49 seconds","4 minutes 22 seconds","26 seconds"], ans: 1, exp: "99.9% uptime means 0.1% downtime per month: 0.001 × 30 days × 24 hr × 60 min ≈ 43 minutes 49 seconds." },
+    { q: "Which of the following statements about Azure Preview services is correct?", opts: ["Preview services are only available to Enterprise customers","Preview services offer a 99.9% SLA","Preview services do not offer an SLA","Preview services are more reliable than GA services"], ans: 2, exp: "Preview services (both Private and Public) are explicitly excluded from SLAs. They should not be used for production workloads requiring guaranteed uptime." },
+    { q: "After a Public Preview is completed successfully, what is the next stage for an Azure feature?", opts: ["Private Preview","Beta","Generally Available (GA)","Extended Preview"], ans: 2, exp: "The Azure release lifecycle is: Private Preview → Public Preview → Generally Available (GA). GA means the feature is fully supported with an SLA." },
+    { q: "Which tool provides personalized recommendations to help reduce Azure costs by identifying underutilized resources?", opts: ["Azure Cost Management","Azure Advisor","Azure Monitor","Azure Policy"], ans: 1, exp: "Azure Advisor analyzes your usage and provides personalized recommendations across cost, security, reliability, performance, and operational excellence." },
+    { q: "A team wants to track which department is responsible for each Azure resource's costs. What should they apply to their resources?", opts: ["Locks","Policies","Tags","Blueprints"], ans: 2, exp: "Tags are name-value pairs applied to Azure resources for organizing, filtering, and tracking costs by department, environment, or project." }
+  ],
+  security: [
+    { q: "What is Azure Security Center primarily used for?", opts: ["Managing billing and subscriptions","Monitoring and providing threat protection across Azure and on-premises datacenters","Creating virtual machines","Storing application secrets"], ans: 1, exp: "Azure Security Center is a monitoring service that provides threat protection across both Azure and on-premises datacenters." },
+    { q: "What does the Secure Score in Azure Security Center represent?", opts: ["The number of virtual machines running","The cost efficiency of your Azure resources","A single aggregated number representing your current security posture","The number of active users in your tenant"], ans: 2, exp: "Security Center continually assesses resources for security issues and aggregates all findings into a single score so you can tell your current security situation." },
+    { q: "Which feature of Azure Security Center allows you to set and monitor policies across management groups, subscriptions, and tenants?", opts: ["Secure Score","Threat Protection","Policy Compliance","Resource Security Hygiene"], ans: 2, exp: "Policy Compliance is built on top of Azure Policy controls, allowing you to set and monitor policies at any organizational level." },
+    { q: "What does Azure Sentinel combine to provide enterprise-wide security analytics?", opts: ["NSG and Azure Firewall","SIEM and SOAR","DDoS Protection and Key Vault","Azure Monitor and Security Center"], ans: 1, exp: "Azure Sentinel is a Security Information and Event Management (SIEM) and Security Orchestration Automated Response (SOAR) solution." },
+    { q: "Which of the following is NOT a connector/integration available in Azure Sentinel?", opts: ["Office 365","Azure Active Directory","Azure Key Vault","Microsoft Cloud App Security"], ans: 2, exp: "Azure Sentinel integrates with Office 365, Azure Active Directory, Azure Advanced Threat Protection, and Microsoft Cloud App Security. Key Vault is not listed as a Sentinel connector." },
+    { q: "What type of data does Azure Key Vault store?", opts: ["Virtual machine disk images","Application secrets such as passwords, API keys, tokens, and certificates","Network traffic logs","User profile information"], ans: 1, exp: "Azure Key Vault stores application secrets in a centralized cloud location in order to securely control access permissions and access logging." },
+    { q: "What does HSM stand for in the context of Azure Key Vault?", opts: ["High Security Management","Hosted Service Module","Hardware Security Module","Hybrid Storage Mechanism"], ans: 2, exp: "HSM stands for Hardware Security Module — a physical device that provides the highest level of security for stored secrets, even inaccessible to Microsoft." },
+    { q: "What is the primary benefit of Azure Dedicated Host compared to a standard Azure VM?", opts: ["It is less expensive","It provides a physical server dedicated to a single organization, with no hardware sharing","It automatically scales to unlimited resources","It comes with built-in DDoS protection"], ans: 1, exp: "Azure Dedicated Host provides physical servers dedicated to a single organization's workload, ensuring hardware isolation at the server level." },
+    { q: "In Defense in Depth, which layer is considered the innermost and most critical to protect?", opts: ["Physical Security","Network","Application","Data"], ans: 3, exp: "Data is the innermost layer in the Defense in Depth model and is what attackers ultimately want to reach. It must be encrypted and protected at all times." },
+    { q: "In the Shared Security model, which responsibility always belongs to the customer regardless of service type (IaaS, PaaS, or SaaS)?", opts: ["Operating system management","Physical datacenter security","Data governance and access management","Network controls"], ans: 2, exp: "Data governance, client endpoints, and account & access management are always the customer's responsibility, regardless of whether the service is IaaS, PaaS, or SaaS." },
+    { q: "What three criteria do Network Security Group (NSG) rules use to filter traffic?", opts: ["Username, password, and region","Source/destination IP address, port number, and protocol","Subscription ID, resource group, and location","Application name, OS type, and VM size"], ans: 1, exp: "NSG rules filter network traffic based on source and destination IP address, port number, and protocol (TCP, UDP, or Any)." },
+    { q: "In NSG rule processing, if two rules conflict, which one takes effect?", opts: ["The rule created most recently","The rule with the highest priority number","The rule with the lowest priority number","The inbound rule always overrides the outbound rule"], ans: 2, exp: "In NSGs, a lower priority number means higher precedence. The rule with the lowest number is evaluated first and overrides rules with higher numbers." },
+    { q: "What does 'stateful' mean when describing Azure Firewall?", opts: ["It only processes inbound traffic","It remembers the full context of a network connection, not just individual packets","It stores firewall rules in Azure State storage","It requires manual updates to rules"], ans: 1, exp: "A stateful firewall tracks the full context of a connection, making it more accurate at identifying and blocking threats compared to a stateless firewall." },
+    { q: "What is the key difference between Azure Firewall and Web Application Firewall (WAF)?", opts: ["Azure Firewall is free; WAF is paid","Azure Firewall protects the network at IP level; WAF protects web applications from HTTP-level attacks","Azure Firewall works only on-premises; WAF works only in the cloud","There is no difference; they are the same service"], ans: 1, exp: "Azure Firewall operates at the network level filtering by IP, while WAF (provided via Azure Application Gateway) protects web applications specifically from attacks like SQL injection and XSS." },
+    { q: "Which tier of Azure DDoS Protection is automatically enabled for all Azure services at no extra cost?", opts: ["Standard tier","Premium tier","Basic tier","Enterprise tier"], ans: 2, exp: "The Basic service tier is automatically enabled in Azure at no additional cost. The Standard tier adds advanced mitigation capabilities but requires additional payment." }
+  ]
+};
+
+// State
+const state = { arch: {}, pricing: {}, security: {} };
+const letters = ['A','B','C','D'];
+
+function buildQuestions(tab) {
+  const container = document.getElementById('questions-' + tab);
+  container.innerHTML = '';
+  DATA[tab].forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + tab + '-' + i;
+
+    const header = document.createElement('div');
+    header.className = 'q-header';
+
+    const num = document.createElement('div');
+    num.className = 'q-num';
+    num.textContent = 'Q' + (i+1);
+
+    const text = document.createElement('div');
+    text.className = 'q-text';
+    text.textContent = q.q;
+
+    const statusIcon = document.createElement('div');
+    statusIcon.className = 'q-status';
+    statusIcon.id = 'status-' + tab + '-' + i;
+
+    header.appendChild(num);
+    header.appendChild(text);
+    header.appendChild(statusIcon);
+    card.appendChild(header);
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+
+    q.opts.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.id = 'opt-' + tab + '-' + i + '-' + j;
+      btn.onclick = () => answer(tab, i, j);
+
+      const letter = document.createElement('span');
+      letter.className = 'opt-letter';
+      letter.textContent = letters[j];
+
+      const optText = document.createElement('span');
+      optText.className = 'opt-text';
+      optText.textContent = opt;
+
+      btn.appendChild(letter);
+      btn.appendChild(optText);
+      opts.appendChild(btn);
+    });
+
+    card.appendChild(opts);
+
+    const exp = document.createElement('div');
+    exp.className = 'explanation';
+    exp.id = 'exp-' + tab + '-' + i;
+    exp.innerHTML = '<strong>Explanation:</strong> ' + q.exp;
+    card.appendChild(exp);
+
+    container.appendChild(card);
+  });
+}
+
+function answer(tab, qIdx, chosenIdx) {
+  if (state[tab][qIdx] !== undefined) return;
+  const q = DATA[tab][qIdx];
+  state[tab][qIdx] = chosenIdx === q.ans;
+
+  // Disable all options
+  q.opts.forEach((_, j) => {
+    const btn = document.getElementById('opt-' + tab + '-' + qIdx + '-' + j);
+    btn.disabled = true;
+    if (j === q.ans) {
+      btn.classList.add(chosenIdx === q.ans ? 'correct' : 'reveal');
+    } else if (j === chosenIdx) {
+      btn.classList.add('wrong');
+    }
+  });
+
+  // Show explanation
+  document.getElementById('exp-' + tab + '-' + qIdx).classList.add('visible');
+
+  // Status icon
+  const icon = document.getElementById('status-' + tab + '-' + qIdx);
+  icon.textContent = state[tab][qIdx] ? '✓' : '✗';
+  icon.className = 'q-status ' + (state[tab][qIdx] ? 'correct' : 'wrong');
+
+  updateScore(tab);
+}
+
+function updateScore(tab) {
+  const answered = Object.keys(state[tab]).length;
+  const correct = Object.values(state[tab]).filter(Boolean).length;
+  const pct = answered === 0 ? 0 : Math.round((correct / answered) * 100);
+
+  document.getElementById('num-' + tab).textContent = correct + ' correct, ' + answered;
+  document.getElementById('pct-' + tab).textContent = pct + '%';
+  document.getElementById('ring-' + tab).style.setProperty('--pct', (pct * 3.6) + 'deg');
+  document.getElementById('ring-' + tab).style.background =
+    'conic-gradient(var(--azure) ' + (pct * 3.6) + 'deg, var(--azure-light) 0%)';
+  document.getElementById('prog-' + tab).style.width = ((answered / 15) * 100) + '%';
+}
+
+function resetTab(tab) {
+  state[tab] = {};
+  buildQuestions(tab);
+  updateScore(tab);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// Init
+buildQuestions('arch');
+buildQuestions('pricing');
+buildQuestions('security');
+</script>
+</body>
+</html>
